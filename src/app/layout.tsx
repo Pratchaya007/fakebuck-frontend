@@ -1,3 +1,14 @@
+import { notoSans } from "@/style/font";
+import "@/style/globals.css";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: {
+    template: "%s - Fakebuck",
+    default: "Fakebuck",
+  },
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -5,7 +16,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`antialiased`}>{children}</body>
+      <body className={`antialiased ${notoSans.className}`}>{children}</body>
     </html>
   );
 }
