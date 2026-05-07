@@ -5,14 +5,22 @@ import { authService } from "../api/auth/auth.service";
 import { LoginInput, RegisterInput } from "../schemas/auth.schemas";
 import { ActionResult } from "./action.type";
 import { formatActionError } from "./action.util";
+import { signIn } from "../auth/auth";
 
 export const register = async (input: RegisterInput): Promise<ActionResult> => {
   try {
     await authService.register(input);
-  }catch (error) {
-    return formatActionError(error)
+  } catch (error) {
+    return formatActionError(error);
   }
-  redirect('/login')
+  redirect("/login");
 };
 
-export const login = async (input: LoginInput) => {};
+export const login = async (input: LoginInput): Promise<ActionResult> => {
+  try {
+    await signIn("credentials", { ...input, redirect: false });
+  } catch (error) {
+    return { success: false, code: 'INVALID_CREDENTIALS'}
+  }
+  redirect('/')
+};

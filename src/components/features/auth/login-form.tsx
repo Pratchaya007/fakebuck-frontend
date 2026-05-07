@@ -1,5 +1,6 @@
 "use client";
 
+import { Alert, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import {
   Field,
@@ -8,15 +9,21 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { login } from "@/lib/actions/auth.action";
 import { LoginInput, loginSchema } from "@/lib/schemas/auth.schemas";
 import { simLoading } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader } from "lucide-react";
+import { AlertCircleIcon, Loader } from "lucide-react";
 import { useTransition } from "react";
 import { Controller, useForm } from "react-hook-form";
 
 export default function LoginForm() {
-  const { handleSubmit, control } = useForm<LoginInput>({
+  const {
+    handleSubmit,
+    control,
+    setError,
+    formState: { errors },
+  } = useForm<LoginInput>({
     defaultValues: {
       email: "",
       password: "",
@@ -28,12 +35,23 @@ export default function LoginForm() {
 
   const onsubmit = (data: LoginInput) => {
     startTransition(async () => {
-      await simLoading();
+      const res = await login(data);
+      if (!res.success) {
+        setError("root", {
+          message: "The email or password you entered is incorrect",
+        });
+      }
     });
   };
 
   return (
     <form onSubmit={handleSubmit(onsubmit)}>
+      {errors.root && (
+        <Alert variant={'destructive'} className="mb-4 bg-red-100 border-red-400">
+          <AlertCircleIcon />
+          <AlertTitle>{errors.root.message}</AlertTitle>
+        </Alert>
+      )}
       <FieldGroup>
         {/* Email */}
         <Controller
@@ -65,7 +83,7 @@ export default function LoginForm() {
                 id={field.name}
                 placeholder="Password..."
                 aria-invalid={fieldState.invalid}
-                type='password'
+                type="password"
               />
               {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
             </Field>
