@@ -12,3 +12,17 @@ export type User = {
   createdAt: string;
   updatedAt: string;
 };
+
+export type UserWithFriends = User & { friends: User[] };
+
+export type RelationshipStatus =
+  | "NONE"
+  | "FRIEND"
+  | "SELF"
+  | "REQUEST_SENT"
+  | "REQUEST_RECEIVED";
+
+export type GetUserProfileReponse = {
+  user: UserWithFriends;
+  relationshipStatus: RelationshipStatus;
+};

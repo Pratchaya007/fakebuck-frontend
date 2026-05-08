@@ -20,7 +20,7 @@ export default function MainNavigation() {
           href={item.href}
           icon={item.icon}
           isActive={
-            pathname !== "/"
+            item.href === "/"
               ? pathname === item.href
               : pathname.startsWith(item.href)
           }

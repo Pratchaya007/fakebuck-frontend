@@ -6,8 +6,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
     Credentials({
       async authorize(credentials) {
-        const { user, accessToken } = await authService.login(credentials);
-        return { ...user, accessToken };
+        const { user, accessToken, expiresIn } =
+          await authService.login(credentials);
+        return { ...user, accessToken, expiresIn };
       },
     }),
   ],
@@ -18,7 +19,17 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         token.firstName = user.firstName;
         token.lastName = user.lastName;
         token.accessToken = user.accessToken;
+        token.accessTokenExpiresAt =
+          Date.now() + ((user.expiresIn ?? 0) - 3) * 1000;
       }
+      //เอามาเปรียบเทียบว่าหมดอายุหรือยังให้ส่ง null ออกไปเลย
+      if (
+        token.accessTokenExpiresAt &&
+        Date.now() > token.accessTokenExpiresAt
+      ) {
+        return null;
+      }
+
       return token;
     },
     session({ session, token }) {
@@ -26,6 +37,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       session.user.firstName = token.firstName;
       session.user.lastName = token.lastName;
       session.user.avatarUrl = token.avatarUrl;
+      session.user.id = token.sub; //เข้าไปแก้ไขใน type ด้วย
 
       return session;
     },
