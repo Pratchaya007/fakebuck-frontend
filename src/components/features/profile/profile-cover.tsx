@@ -2,20 +2,21 @@ import { Button } from "@/components/ui/button";
 import { Camera } from "lucide-react";
 import Image from "next/image";
 import ImageUploadDialog from "./image-upload-dialog";
+import { uploadCover } from "@/lib/actions/user.action";
 
 interface ProfileCoverProps {
-  converUrl: string | null;
+  coverUrl: string | null;
   canEdit?: boolean;
 }
 
 export default function ProfileCover({
-  converUrl,
+  coverUrl,
   canEdit = false,
 }: ProfileCoverProps) {
   return (
     <div className="relative max-w-273 aspect-1095/405 mx-auto rounded-b-2xl overflow-hidden">
-      {converUrl && (
-        <Image alt="cover" src={converUrl} fill className=" object-cover" />
+      {coverUrl && (
+        <Image alt="cover" src={coverUrl} fill className=" object-cover" />
       )}
       {canEdit && (
         <ImageUploadDialog
@@ -28,7 +29,9 @@ export default function ProfileCover({
               Edit cover photo
             </Button>
           }
-          initalCoverUrl={converUrl}
+          initialUrl={coverUrl}
+          title="Edit cover photo"
+          onUpload={uploadCover}
         />
       )}
     </div>

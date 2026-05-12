@@ -1,8 +1,15 @@
 import { RelationshipStatus, UserWithFriends } from "@/lib/api/user/user.type";
 import ProfileCover from "./profile-cover";
-import { Avatar, AvatarFallback, AvatarGroup, AvatarImage } from "@/components/ui/avatar";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarGroup,
+  AvatarImage,
+} from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Camera, Check, Trash2 } from "lucide-react";
+import ProfileAvatar from "./profile-avatar";
+import ProfileAction from "./profile-action";
 
 interface ProfileHeaderProps {
   user: UserWithFriends;
@@ -17,7 +24,7 @@ export default function ProfileHeader({
     <div className=" shadow bg-background">
       {/* Cover photo */}
       <ProfileCover
-        converUrl={user.coverUrl}
+        coverUrl={user.coverUrl}
         canEdit={relationshipStatus === "SELF"}
       />
       {/* Info bar */}
@@ -31,17 +38,10 @@ export default function ProfileHeader({
           {/* Left: Avatar + Name */}
           <div className="flex items-center gap-6">
             {/* Avatar */}
-            <div className="relative">
-              <Avatar className="size-42 border">
-                <AvatarImage src={"/default-user.png"} alt="John Doe" />
-              </Avatar>
-              <Button
-                variant="outline"
-                className="absolute bottom-3 right-2 size-9 rounded-full shadow"
-              >
-                <Camera className="w-4 h-4" />
-              </Button>
-            </div>
+            <ProfileAvatar
+              avatarUrl={user.avatarUrl}
+              canEdit={relationshipStatus === "SELF"}
+            />
 
             {/* Name + friends */}
             <div className="">
@@ -76,16 +76,7 @@ export default function ProfileHeader({
           </div>
 
           {/* Right: Action buttons */}
-          <div className="flex items-center gap-2 pb-2">
-            <Button className="font-semibold">
-              <Check className="size-4" />
-              Confirm
-            </Button>
-            <Button variant="outline" className="font-semibold">
-              <Trash2 className="size-4" />
-              Delete
-            </Button>
-          </div>
+          <ProfileAction relationshipStatus={relationshipStatus}/>
         </div>
       </div>
     </div>

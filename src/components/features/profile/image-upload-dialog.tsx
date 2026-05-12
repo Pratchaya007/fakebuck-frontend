@@ -9,20 +9,24 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { uploadCover } from "@/lib/actions/user.action";
+import { ActionResult } from "@/lib/actions/action.type";
 import { FileImage, Loader } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { ReactNode, useRef, useState, useTransition } from "react";
 
 type ImageUploadDialogProps = {
-  initalCoverUrl?: string | null;
+  initialUrl?: string | null;
   trigger: ReactNode;
+  title: string;
+  onUpload: (file: File) => Promise<ActionResult>
 };
 
 export default function ImageUploadDialog({
   trigger,
-  initalCoverUrl,
+  initialUrl: initalUrl,
+  title,
+  onUpload
 }: ImageUploadDialogProps) {
   const fileInputEl = useRef<HTMLInputElement | null>(null);
   const [file, setFile] = useState<File | null>(null);
@@ -33,10 +37,10 @@ export default function ImageUploadDialog({
   const router = useRouter();
 
   // fn handle upload file in database
-  const handleClickUpload = async () => {
+  const handleClickUpload = () => {
     startTransition(async () => {
       if (file) {
-        await uploadCover(file);
+        await onUpload(file);
         setOpen(false);
         setFile(null);
         router.refresh();
@@ -44,7 +48,7 @@ export default function ImageUploadDialog({
     });
   };
 
-  const imageUrl = file ? URL.createObjectURL(file) : initalCoverUrl;
+  const imageUrl = file ? URL.createObjectURL(file) : initalUrl;
 
   return (
     <>
@@ -74,7 +78,7 @@ export default function ImageUploadDialog({
           }}
         >
           <DialogHeader>
-            <DialogTitle>Edit cover photo</DialogTitle>
+            <DialogTitle>{title}</DialogTitle>
           </DialogHeader>
           <div>
             <div className="relative aspect-1095/405 rounded-lg overflow-hidden bg-muted flex justify-center items-center">
