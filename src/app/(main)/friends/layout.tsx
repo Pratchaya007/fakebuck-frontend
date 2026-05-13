@@ -7,7 +7,7 @@ export default function FriendLayout({
 }) {
   return <div className="flex">
     <FriendSidebar/>
-    <main>
+    <main className="flex-1 ml-90">
       {children}
     </main>
   </div>

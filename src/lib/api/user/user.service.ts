@@ -1,5 +1,5 @@
 import { api } from "../client";
-import { GetUserProfileReponse } from "./user.type";
+import { GetUserProfileReponse, User } from "./user.type";
 
 const uploadCover = (input: FormData) =>
   api.patch<string>("/users/me/cover", input);
@@ -11,4 +11,6 @@ const uploadAvatar = (input: FormData) => {
 const getUserProfile = (targetUser: string) =>
   api.get<GetUserProfileReponse>(`/users/${targetUser}/profile`);
 
-export const userService = { uploadCover , getUserProfile , uploadAvatar};
+const getUserWithNoneRelation = () => api.get<User[]>('/users/relationship/none')
+
+export const userService = { uploadCover , getUserProfile , uploadAvatar , getUserWithNoneRelation};
