@@ -6,6 +6,6 @@ export const metadata: Metadata = {
 
 export default function FriendPage() {
   return (
-    <div>FriendPage</div>
+    <div></div>
   )
 }
